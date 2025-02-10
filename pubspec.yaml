@@ -10,6 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_native_splash: ^2.4.4
+  google_fonts: ^6.2.1
+  micro_app_login:
+    path: packages/micro_apps/micro_app_login
 
 dev_dependencies:
   flutter_test:
@@ -18,3 +21,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+
