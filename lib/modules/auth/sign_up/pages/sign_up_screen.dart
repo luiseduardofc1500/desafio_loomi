@@ -1,10 +1,14 @@
+import 'package:cine_loomi/modules/auth/controller/sign_up_controller.dart';
 import 'package:flutter/material.dart';
-import '../widgets/social_sign_up_buttons.dart';
-import '../widgets/custom_text_field.dart';
-import '../widgets/password_text_field.dart';
+import 'package:get/get.dart';
+import '../../widgets/social_sign_up_buttons.dart';
+import '../../widgets/custom_text_field.dart';
+import '../../widgets/password_text_field.dart';
 
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  SignUpScreen({Key? key}) : super(key: key);
+
+  final SignUpController signUpController = Get.put(SignUpController());
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,7 @@ class SignUpScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
               Image.asset(
                 'assets/images/login_logo.png',
                 width: 132,
@@ -33,6 +37,9 @@ class SignUpScreen extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {},
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                    ),
                     child: Text(
                       'Sign In!',
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -48,10 +55,13 @@ class SignUpScreen extends StatelessWidget {
                 style: theme.textTheme.titleLarge,
               ),
               const SizedBox(height: 12),
-              Text(
-                'To get started, please complete your account registration.',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium,
+              SizedBox(
+                width: 308,
+                child: Text(
+                  'To get started, please complete your account registration.',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium,
+                ),
               ),
               const SizedBox(height: 42),
               const SocialSignUpButtons(),
@@ -74,18 +84,31 @@ class SignUpScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              const CustomTextField(labelText: 'Email'),
+              const SizedBox(height: 32),
+              CustomTextField(
+                labelText: 'Email',
+                controller: signUpController.emailController,
+              ),
               const SizedBox(height: 16),
-              const PasswordTextField(labelText: 'Password'),
+              PasswordTextField(
+                labelText: 'Password',
+                controller: signUpController.passwordController,
+              ),
               const SizedBox(height: 16),
-              const PasswordTextField(labelText: 'Confirm your Password'),
+              PasswordTextField(
+                labelText: 'Confirm your Password',
+                controller: signUpController.confirmPasswordController,
+              ),
               const SizedBox(height: 32),
               SizedBox(
                 width: 200,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (signUpController.validateFields()) {
+                      Get.toNamed('/SignUp/Complete');
+                    }
+                  },
                   child: const Text('Create Account'),
                 ),
               ),
