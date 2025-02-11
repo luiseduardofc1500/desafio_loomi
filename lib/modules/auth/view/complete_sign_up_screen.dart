@@ -1,7 +1,8 @@
+import 'package:cine_loomi/modules/auth/controller/photo_controller.dart';
 import 'package:cine_loomi/themes/app.theme.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
-import '../../widgets/custom_text_field.dart';
+import 'package:get/get.dart';
+import '../widgets/custom_text_field.dart';
 
 class CompleteSignUpScreen extends StatelessWidget {
   const CompleteSignUpScreen({Key? key}) : super(key: key);
@@ -9,6 +10,7 @@ class CompleteSignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final PhotoController photoController = Get.find<PhotoController>();
 
     return Scaffold(
       body: SafeArea(
@@ -41,22 +43,42 @@ class CompleteSignUpScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: () {},
-                    child: Container(
-                      width: 116,
-                      height: 116,
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(188, 76, 241, 0.2),
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          'assets/images/camera.png',
-                          width: 24,
-                          height: 24,
-                        ),
-                      ),
-                    ),
+                    onTap: () {
+                      Get.toNamed('SignUp/Complete/photo-selection');
+                    },
+                    child: Obx(() {
+                      // Se houver uma imagem selecionada, exibe-a; senão, mostra o ícone padrão
+                      if (photoController.selectedImage.value != null) {
+                        return Container(
+                          width: 116,
+                          height: 116,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            image: DecorationImage(
+                              image: FileImage(
+                                  photoController.selectedImage.value!),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Container(
+                          width: 116,
+                          height: 116,
+                          decoration: BoxDecoration(
+                            color: const Color.fromRGBO(188, 76, 241, 0.2),
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/camera.png',
+                              width: 24,
+                              height: 24,
+                            ),
+                          ),
+                        );
+                      }
+                    }),
                   ),
                   SizedBox(
                     width: 92,

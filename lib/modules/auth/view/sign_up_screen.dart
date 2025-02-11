@@ -1,9 +1,9 @@
 import 'package:cine_loomi/modules/auth/controller/sign_up_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../widgets/social_sign_up_buttons.dart';
-import '../../widgets/custom_text_field.dart';
-import '../../widgets/password_text_field.dart';
+import '../widgets/social_sign_up_buttons.dart';
+import '../widgets/custom_text_field.dart';
+import '../widgets/password_text_field.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({Key? key}) : super(key: key);
@@ -36,7 +36,9 @@ class SignUpScreen extends StatelessWidget {
                     style: theme.textTheme.bodyMedium,
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.toNamed('SignIn');
+                    },
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
                     ),

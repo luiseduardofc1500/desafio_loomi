@@ -13,7 +13,7 @@ class App extends StatelessWidget {
       title: 'Desafio Loomi',
       theme: appTheme(),
       defaultTransition: Transition.native,
-      initialRoute: '/SignUp',
+      initialRoute: '/SignIn',
       getPages: AppPages.routes,
     );
   }
