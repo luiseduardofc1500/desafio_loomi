@@ -1,6 +1,10 @@
 import 'package:cine_loomi/modules/auth/controller/sign_in_controller.dart';
+import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
+import 'package:cine_loomi/modules/auth/widgets/divider_text.dart';
+import 'package:cine_loomi/modules/auth/widgets/logo_widget.dart';
 import 'package:cine_loomi/modules/auth/widgets/password_text_field.dart';
 import 'package:cine_loomi/modules/auth/widgets/social_sign_up_buttons.dart';
+import 'package:cine_loomi/modules/auth/widgets/text_with_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../widgets/custom_text_field.dart';
@@ -21,12 +25,7 @@ class SignInScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 16),
-              Image.asset(
-                color: Color.fromRGBO(255, 255, 255, 0.6),
-                'assets/images/logo.png',
-                width: 32,
-                height: 32,
-              ),
+              LogoWidget(),
               const SizedBox(height: 56),
               Text(
                 'Welcome Back!',
@@ -68,63 +67,23 @@ class SignInScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32),
-              SizedBox(
-                width: 200,
-                height: 50,
-                child: ElevatedButton(
+              ButtonAccount(
                   onPressed: () {
-                    if (signInController.validateFields()) {
-                      Get.toNamed('/SignUp/Complete');
-                    }
+                    //Fazer a logica do firebase e ir para home.
+                    Get.toNamed('/SignUp/Complete');
                   },
-                  child: const Text('Login'),
-                ),
-              ),
+                  labelText: 'Login'),
               const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Expanded(
-                    child: Divider(color: Colors.grey),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Or Sign in With',
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ),
-                  const Expanded(
-                    child: Divider(color: Colors.grey),
-                  ),
-                ],
-              ),
+              DividerText(text: 'Or Sign in With'),
               const SizedBox(height: 32),
               const SocialSignUpButtons(),
               const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't have an account?",
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.toNamed('/SignUp');
-                    },
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: Text(
-                      'Sign Up!',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                          color: const Color.fromRGBO(170, 115, 240, 1),
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ],
-              ),
+              TextWithTextButton(
+                  onPressed: () {
+                    Get.toNamed('/SignUp');
+                  },
+                  labelText: "Don't have an account?",
+                  buttonText: 'Sign Up!'),
             ],
           ),
         ),

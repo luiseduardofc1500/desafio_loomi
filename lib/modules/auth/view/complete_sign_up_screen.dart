@@ -1,4 +1,6 @@
 import 'package:cine_loomi/modules/auth/controller/photo_controller.dart';
+import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
+import 'package:cine_loomi/modules/auth/widgets/logo_widget.dart';
 import 'package:cine_loomi/themes/app.theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,12 +22,7 @@ class CompleteSignUpScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 16),
-              Image.asset(
-                color: Color.fromRGBO(255, 255, 255, 0.6),
-                'assets/images/logo.png',
-                width: 32,
-                height: 32,
-              ),
+              LogoWidget(),
               const SizedBox(height: 56),
               Text(
                 'Tell us more!',
@@ -100,15 +97,7 @@ class CompleteSignUpScreen extends StatelessWidget {
               const SizedBox(height: 56),
               const CustomTextField(labelText: 'Your name'),
               const SizedBox(height: 56),
-              SizedBox(
-                width: 200,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Continue'),
-                ),
-              ),
-              const SizedBox(height: 2),
+              ButtonAccount(onPressed: () {}, labelText: 'Continue'),
               SizedBox(
                 width: 200,
                 height: 50,

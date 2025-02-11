@@ -1,4 +1,7 @@
 import 'package:cine_loomi/modules/auth/controller/sign_up_controller.dart';
+import 'package:cine_loomi/modules/auth/widgets/divider_text.dart';
+import 'package:cine_loomi/modules/auth/widgets/logo_widget.dart';
+import 'package:cine_loomi/modules/auth/widgets/text_with_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../widgets/social_sign_up_buttons.dart';
@@ -22,35 +25,14 @@ class SignUpScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 16),
-              Image.asset(
-                'assets/images/login_logo.png',
-                width: 132,
-                height: 98,
-              ),
+              LogoWidget(),
               const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Already have an account?',
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.toNamed('SignIn');
-                    },
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: Text(
-                      'Sign In!',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                          color: const Color.fromRGBO(170, 115, 240, 1),
-                          fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ],
-              ),
+              TextWithTextButton(
+                  onPressed: () {
+                    Get.toNamed('SignIn');
+                  },
+                  labelText: 'Already have an account?',
+                  buttonText: 'Sign In!'),
               const SizedBox(height: 42),
               Text(
                 'Create an account',
@@ -68,24 +50,7 @@ class SignUpScreen extends StatelessWidget {
               const SizedBox(height: 42),
               const SocialSignUpButtons(),
               const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Expanded(
-                    child: Divider(color: Colors.grey),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Or Sign up With',
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ),
-                  const Expanded(
-                    child: Divider(color: Colors.grey),
-                  ),
-                ],
-              ),
+              DividerText(text: 'Or Sign up With'),
               const SizedBox(height: 32),
               CustomTextField(
                 labelText: 'Email',

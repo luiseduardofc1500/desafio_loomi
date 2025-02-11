@@ -1,16 +1,16 @@
-import 'package:cine_loomi/modules/auth/controller/sign_in_controller.dart';
 import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
-import 'package:cine_loomi/modules/auth/widgets/custom_text_field.dart';
 import 'package:cine_loomi/modules/auth/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+class InstructionsScreen extends StatefulWidget {
+  const InstructionsScreen({super.key});
+
   @override
-  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
+  State<InstructionsScreen> createState() => _InstructionsScreenState();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+class _InstructionsScreenState extends State<InstructionsScreen> {
   bool isCollapsed = false;
 
   @override
@@ -26,7 +26,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final SignInController signInController = Get.put(SignInController());
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -40,7 +39,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               LogoWidget(),
               const SizedBox(height: 56),
               Text(
-                'Forgot Password?',
+                'The instructions were sent!',
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 24,
@@ -64,17 +63,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 height: isCollapsed ? 60 : 120,
                 color: Colors.transparent,
               ),
-              CustomTextField(
-                labelText: 'Email',
-                controller: signInController.emailController,
-              ),
-              AnimatedContainer(
-                duration: const Duration(seconds: 2),
-                curve: Curves.easeInOut,
-                height: isCollapsed ? 260 : 120,
-                color: Colors.transparent,
-              ),
-              const SizedBox(height: 24),
             ],
           ),
         ),
@@ -86,23 +74,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           children: [
             ButtonAccount(
               onPressed: () {
-                Get.toNamed('/SignIn/forgot-password/instructions');
+                Get.toNamed('/SignIn');
               },
-              labelText: 'Send reset instructions',
-            ),
-            SizedBox(
-              width: 240,
-              height: 48,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  side: const BorderSide(color: Colors.transparent),
-                ),
-                onPressed: () {
-                  Get.back();
-                },
-                child: const Text('Back'),
-              ),
+              labelText: 'Login',
             ),
           ],
         ),
