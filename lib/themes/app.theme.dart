@@ -35,6 +35,18 @@ ThemeData appTheme() {
         fontSize: 12,
         fontWeight: FontWeight.w500,
       ),
+      labelMedium: TextStyle(
+        color: Colors.white,
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        fontFamily: GoogleFonts.epilogue().fontFamily,
+      ),
+      labelSmall: TextStyle(
+        color: const Color.fromRGBO(255, 255, 255, 1),
+        fontSize: 10,
+        fontWeight: FontWeight.w400,
+        fontFamily: GoogleFonts.epilogue().fontFamily,
+      ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
