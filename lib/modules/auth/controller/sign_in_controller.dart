@@ -19,7 +19,7 @@ class SignInController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
-    //Fazer aqui a logica do firebase de login
+
     return true;
   }
 

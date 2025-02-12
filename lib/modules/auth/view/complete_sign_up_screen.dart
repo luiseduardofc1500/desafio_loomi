@@ -1,4 +1,6 @@
+import 'package:cine_loomi/modules/auth/controller/auth_controller.dart';
 import 'package:cine_loomi/modules/auth/controller/photo_controller.dart';
+import 'package:cine_loomi/modules/auth/controller/sign_up_controller.dart';
 import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
 import 'package:cine_loomi/modules/auth/widgets/logo_widget.dart';
 import 'package:cine_loomi/themes/app.theme.dart';
@@ -7,8 +9,12 @@ import 'package:get/get.dart';
 import '../widgets/custom_text_field.dart';
 
 class CompleteSignUpScreen extends StatelessWidget {
-  const CompleteSignUpScreen({Key? key}) : super(key: key);
+  CompleteSignUpScreen({Key? key}) : super(key: key);
 
+  final String email = Get.arguments['email'];
+  final String password = Get.arguments['password'];
+
+  final SignUpController signUpController = Get.put(SignUpController());
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -44,7 +50,6 @@ class CompleteSignUpScreen extends StatelessWidget {
                       Get.toNamed('SignUp/Complete/photo-selection');
                     },
                     child: Obx(() {
-                      // Se houver uma imagem selecionada, exibe-a; senão, mostra o ícone padrão
                       if (photoController.selectedImage.value != null) {
                         return Container(
                           width: 116,
@@ -95,9 +100,23 @@ class CompleteSignUpScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 56),
-              const CustomTextField(labelText: 'Your name'),
+              CustomTextField(
+                labelText: 'Your name',
+                controller: signUpController.userNameController,
+              ),
               const SizedBox(height: 56),
-              ButtonAccount(onPressed: () {}, labelText: 'Continue'),
+              ButtonAccount(
+                  onPressed: () {
+                    if (signUpController.validateFieldUser()) {
+                      AuthController.to.signUp(
+                        email,
+                        password,
+                        name: signUpController.userNameController.text,
+                        photo: photoController.selectedImage.value?.path,
+                      );
+                    }
+                  },
+                  labelText: 'Continue'),
               SizedBox(
                 width: 200,
                 height: 50,

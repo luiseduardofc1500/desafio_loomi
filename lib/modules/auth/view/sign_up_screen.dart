@@ -73,7 +73,10 @@ class SignUpScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     if (signUpController.validateFields()) {
-                      Get.toNamed('/SignUp/Complete');
+                      Get.toNamed('/SignUp/Complete', arguments: {
+                        'email': signUpController.emailController.text,
+                        'password': signUpController.passwordController.text
+                      });
                     }
                   },
                   child: const Text('Create Account'),
