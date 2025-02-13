@@ -1,3 +1,4 @@
+import 'package:cine_loomi/modules/auth/controller/auth_controller.dart';
 import 'package:cine_loomi/modules/auth/controller/sign_in_controller.dart';
 import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
 import 'package:cine_loomi/modules/auth/widgets/divider_text.dart';
@@ -68,9 +69,13 @@ class SignInScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               ButtonAccount(
-                  onPressed: () {
-                    //Fazer a logica do firebase e ir para home.
-                    Get.toNamed('/SignUp/Complete');
+                  onPressed: () async {
+                    if (signInController.validateFields()) {
+                      await AuthController.to.signIn(
+                          signInController.emailController.text,
+                          signInController.passwordController.text);
+                      Get.offAllNamed('/home');
+                    }
                   },
                   labelText: 'Login'),
               const SizedBox(height: 32),
@@ -80,7 +85,7 @@ class SignInScreen extends StatelessWidget {
               const SizedBox(height: 32),
               TextWithTextButton(
                   onPressed: () {
-                    Get.toNamed('/SignUp');
+                    Get.offAllNamed('/SignUp');
                   },
                   labelText: "Don't have an account?",
                   buttonText: 'Sign Up!'),

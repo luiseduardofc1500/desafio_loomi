@@ -1,4 +1,5 @@
-import 'package:cine_loomi/modules/auth/controller/sign_in_controller.dart';
+import 'package:cine_loomi/modules/auth/controller/auth_controller.dart';
+import 'package:cine_loomi/modules/auth/controller/forgot_password_controller.dart';
 import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
 import 'package:cine_loomi/modules/auth/widgets/custom_text_field.dart';
 import 'package:cine_loomi/modules/auth/widgets/logo_widget.dart';
@@ -26,10 +27,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final SignInController signInController = Get.put(SignInController());
+    final AuthController authController = Get.put(AuthController());
+    final ForgotPasswordController forgotPasswordController =
+        Get.put(ForgotPasswordController());
 
     return Scaffold(
-      backgroundColor: Colors.black,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -66,7 +68,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ),
               CustomTextField(
                 labelText: 'Email',
-                controller: signInController.emailController,
+                controller: forgotPasswordController.emailController,
               ),
               AnimatedContainer(
                 duration: const Duration(seconds: 2),
@@ -85,8 +87,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ButtonAccount(
-              onPressed: () {
-                Get.toNamed('/SignIn/forgot-password/instructions');
+              onPressed: () async {
+                if (forgotPasswordController.validateField()) {
+                  await authController.resetPassword(
+                      forgotPasswordController.emailController.text);
+                }
+                Get.offNamed('/SignIn/forgot-password/instructions');
               },
               labelText: 'Send reset instructions',
             ),

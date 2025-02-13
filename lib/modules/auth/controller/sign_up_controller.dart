@@ -13,22 +13,22 @@ class SignUpController extends GetxController {
     final confirmPassword = confirmPasswordController.text;
 
     if (!GetUtils.isEmail(email)) {
-      Get.snackbar('Erro', 'Email inválido',
+      Get.snackbar('Error', 'Invalid email',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
     if (password.isEmpty || confirmPassword.isEmpty) {
-      Get.snackbar('Erro', 'Preencha os campos de senha',
+      Get.snackbar('Error', 'Please fill in the password fields',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
     if (password != confirmPassword) {
-      Get.snackbar('Erro', 'As senhas não coincidem',
+      Get.snackbar('Error', 'Passwords do not match',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
     if (password.length < 6) {
-      Get.snackbar('Erro', 'Senha deve ter no mínimo 6 caracteres',
+      Get.snackbar('Error', 'Password must have at least 6 characters',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
@@ -38,7 +38,7 @@ class SignUpController extends GetxController {
   bool validateFieldUser() {
     final userName = userNameController.text.trim();
     if (userName.isEmpty) {
-      Get.snackbar('Erro', 'Preencha o campo de nome',
+      Get.snackbar('Error', 'Please fill in the name field',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }

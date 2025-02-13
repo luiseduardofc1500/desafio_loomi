@@ -106,14 +106,12 @@ class CompleteSignUpScreen extends StatelessWidget {
               ),
               const SizedBox(height: 56),
               ButtonAccount(
-                  onPressed: () {
+                  onPressed: () async {
                     if (signUpController.validateFieldUser()) {
-                      AuthController.to.signUp(
-                        email,
-                        password,
+                      await AuthController.to.updateProfile(
                         name: signUpController.userNameController.text,
-                        photo: photoController.selectedImage.value?.path,
                       );
+                      Get.offAllNamed('/profile');
                     }
                   },
                   labelText: 'Continue'),

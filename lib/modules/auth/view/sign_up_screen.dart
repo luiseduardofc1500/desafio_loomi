@@ -1,3 +1,4 @@
+import 'package:cine_loomi/modules/auth/controller/auth_controller.dart';
 import 'package:cine_loomi/modules/auth/controller/sign_up_controller.dart';
 import 'package:cine_loomi/modules/auth/widgets/divider_text.dart';
 import 'package:cine_loomi/modules/auth/widgets/logo_widget.dart';
@@ -29,7 +30,7 @@ class SignUpScreen extends StatelessWidget {
               const SizedBox(height: 8),
               TextWithTextButton(
                   onPressed: () {
-                    Get.toNamed('SignIn');
+                    Get.offAllNamed('/SignIn');
                   },
                   labelText: 'Already have an account?',
                   buttonText: 'Sign In!'),
@@ -71,12 +72,13 @@ class SignUpScreen extends StatelessWidget {
                 width: 200,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (signUpController.validateFields()) {
-                      Get.toNamed('/SignUp/Complete', arguments: {
-                        'email': signUpController.emailController.text,
-                        'password': signUpController.passwordController.text
-                      });
+                      await AuthController.to.signUp(
+                        signUpController.emailController.text,
+                        signUpController.passwordController.text,
+                      );
+                      Get.offAllNamed('/SignUp/Complete');
                     }
                   },
                   child: const Text('Create Account'),
