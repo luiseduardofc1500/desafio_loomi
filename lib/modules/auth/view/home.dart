@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Home extends StatelessWidget {
-  Home({super.key});
-
-  final textController = TextEditingController();
+  Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    /// Recupera o usuário atual do Firebase (via AuthController, se preferir).
+    /// Se você tiver o AuthController com `firebaseUser.value`, pode usar:
+    /// final user = authController.firebaseUser.value;
+    /// Aqui, para simplificar, estou pegando diretamente de 'auth.currentUser'.
+    final user = auth.currentUser;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -22,56 +26,57 @@ class Home extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          const SizedBox(height: 20),
-          // Exibe a foto do usuário, se existir.
-
-          const SizedBox(height: 20),
-          // Exibe o nome e o email do usuário
-          const SizedBox(height: 20),
-          const Text(
-            "Add Todo Here:",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          TextButton(
-              onPressed: () {
-                Get.toNamed('/SignUp/Complete');
-              },
-              child: Text('Lets')),
-          Card(
-            margin: const EdgeInsets.all(20),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
+      body: user == null
+          ? const Center(child: Text('Nenhum usuário logado'))
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: textController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter a todo title',
+                  // Foto do usuário (se existir)
+                  if (user.photoURL != null)
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: NetworkImage(user.photoURL!),
+                    )
+                  else
+                    const CircleAvatar(
+                      radius: 40,
+                      child: Icon(Icons.person, size: 40),
+                    ),
+                  const SizedBox(height: 16),
+
+                  // Display Name (se existir)
+                  if (user.displayName != null)
+                    Text(
+                      user.displayName!,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
+
+                  const SizedBox(height: 8),
+
+                  // Email (se existir)
+                  if (user.email != null)
+                    Text(
+                      user.email!,
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+
+                  const SizedBox(height: 24),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      Get.toNamed('/home/profile');
+                    },
+                    child: const Text('Ir para SignUp Complete'),
                   ),
-                  const SizedBox(width: 30),
                 ],
               ),
             ),
-          ),
-          const Text(
-            "Your Todos",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

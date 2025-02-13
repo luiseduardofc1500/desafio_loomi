@@ -28,7 +28,6 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.black,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),

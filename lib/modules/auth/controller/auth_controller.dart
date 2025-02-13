@@ -36,10 +36,8 @@ class AuthController extends GetxController {
   _setInitialScreenGoogle(GoogleSignInAccount? googleSignInAccount) {
     print(googleSignInAccount);
     if (googleSignInAccount == null) {
-      // if the user is not found then the user is navigated to the Register Screen
       Get.offAllNamed('/SignUp');
     } else {
-      // if the user exists and logged in the the user is navigated to the Home Screen
       Get.offAllNamed('/home');
     }
   }
@@ -108,11 +106,8 @@ class AuthController extends GetxController {
 
   void sendPasswordForgotEmail(String email) async {
     try {
-      showLoading();
       await auth.sendPasswordResetEmail(email: email);
-      hideLoading();
     } catch (firebaseAuthException) {
-      hideLoading();
       Get.snackbar(
         "Error",
         firebaseAuthException.toString(),

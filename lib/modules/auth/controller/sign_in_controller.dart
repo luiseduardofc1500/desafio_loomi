@@ -22,11 +22,4 @@ class SignInController extends GetxController {
 
     return true;
   }
-
-  @override
-  void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.onClose();
-  }
 }

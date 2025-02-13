@@ -1,4 +1,4 @@
-import 'package:cine_loomi/modules/auth/routes/app_pages.dart';
+import 'package:cine_loomi/routes/app_pages.dart';
 import 'package:cine_loomi/themes/app.theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
