@@ -1,7 +1,6 @@
+import 'package:cine_loomi/modules/auth/controller/auth_controller.dart';
 import 'package:cine_loomi/modules/auth/view/home.dart';
 import 'package:cine_loomi/modules/auth/view/sign_in_screen.dart';
-import 'package:cine_loomi/modules/auth/controller/auth_controller.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

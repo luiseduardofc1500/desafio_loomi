@@ -74,7 +74,7 @@ class _InstructionsScreenState extends State<InstructionsScreen> {
           children: [
             ButtonAccount(
               onPressed: () {
-                Get.toNamed('/SignIn');
+                Get.offAllNamed('/SignIn');
               },
               labelText: 'Login',
             ),

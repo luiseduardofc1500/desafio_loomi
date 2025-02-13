@@ -1,3 +1,4 @@
+import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
 import 'package:cine_loomi/modules/auth/controller/sign_in_controller.dart';
 import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
 import 'package:cine_loomi/modules/auth/widgets/divider_text.dart';
@@ -69,18 +70,23 @@ class SignInScreen extends StatelessWidget {
               const SizedBox(height: 32),
               ButtonAccount(
                   onPressed: () {
-                    //Fazer a logica do firebase e ir para home.
-                    Get.toNamed('/SignUp/Complete');
+                    authController.login(signInController.emailController.text,
+                        signInController.passwordController.text);
                   },
                   labelText: 'Login'),
               const SizedBox(height: 32),
               DividerText(text: 'Or Sign in With'),
               const SizedBox(height: 32),
-              const SocialSignUpButtons(),
+              SocialSignUpButtons(
+                onGoogleTap: () {
+                  authController.signInWithGoogle();
+                },
+                onAppleTap: () {},
+              ),
               const SizedBox(height: 32),
               TextWithTextButton(
                   onPressed: () {
-                    Get.toNamed('/SignUp');
+                    Get.offAllNamed('/SignUp');
                   },
                   labelText: "Don't have an account?",
                   buttonText: 'Sign Up!'),

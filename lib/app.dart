@@ -1,5 +1,4 @@
 import 'package:cine_loomi/modules/auth/routes/app_pages.dart';
-import 'package:cine_loomi/modules/auth/routes/root.dart';
 import 'package:cine_loomi/themes/app.theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -14,7 +13,7 @@ class App extends StatelessWidget {
       title: 'Desafio Loomi',
       theme: appTheme(),
       defaultTransition: Transition.native,
-      home: Root(),
+      home: const CircularProgressIndicator(),
       getPages: AppPages.routes,
     );
   }

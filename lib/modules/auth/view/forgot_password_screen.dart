@@ -1,3 +1,4 @@
+import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
 import 'package:cine_loomi/modules/auth/controller/sign_in_controller.dart';
 import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
 import 'package:cine_loomi/modules/auth/widgets/custom_text_field.dart';
@@ -29,7 +30,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final SignInController signInController = Get.put(SignInController());
 
     return Scaffold(
-      backgroundColor: Colors.black,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -86,6 +86,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           children: [
             ButtonAccount(
               onPressed: () {
+                authController.sendPasswordForgotEmail(
+                    signInController.emailController.text);
                 Get.toNamed('/SignIn/forgot-password/instructions');
               },
               labelText: 'Send reset instructions',

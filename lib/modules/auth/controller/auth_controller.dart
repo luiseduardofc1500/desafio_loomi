@@ -1,89 +1,146 @@
+import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthController extends GetxController {
-  static AuthController get to => Get.find();
+  static AuthController instance = Get.find();
+  late Rx<User?> firebaseUser;
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  Rxn<User> firebaseUser = Rxn<User>();
+  late Rx<GoogleSignInAccount?> googleSignInAccount;
 
   @override
-  void onInit() {
-    firebaseUser.bindStream(_auth.authStateChanges());
-    super.onInit();
+  void onReady() {
+    super.onReady();
+
+    firebaseUser = Rx<User?>(auth.currentUser);
+    googleSignInAccount = Rx<GoogleSignInAccount?>(googleSign.currentUser);
+
+    firebaseUser.bindStream(auth.userChanges());
+    ever(firebaseUser, _setInitialScreen);
+
+    googleSignInAccount.bindStream(googleSign.onCurrentUserChanged);
+    ever(googleSignInAccount, _setInitialScreenGoogle);
   }
 
-  Future<void> signIn(String email, String password) async {
-    try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (e) {
-      Get.snackbar(
-        "Erro ao fazer login",
-        e.message ?? "Erro desconhecido",
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-  }
-
-  Future<void> signUp(String email, String password,
-      {String? name, String? photo}) async {
-    Get.dialog(
-      const Center(child: CircularProgressIndicator()),
-      barrierDismissible: false,
-    );
-
-    try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      firebaseUser.value = userCredential.user;
-
-      if (name != null || photo != null) {
-        await userCredential.user!.updateProfile(
-          displayName: name,
-          photoURL: photo,
-        );
-        await userCredential.user!.reload();
-        firebaseUser.value = _auth.currentUser;
-      }
-
-      if (Get.isDialogOpen ?? false) Get.back();
-
-      Get.snackbar(
-        "Sucesso",
-        "Usuário cadastrado com sucesso!",
-        snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 2),
-      );
-
-      await Future.delayed(const Duration(seconds: 2));
-
+  _setInitialScreen(User? user) {
+    if (user == null) {
+      // if the user is not found then the user is navigated to the Register Screen
+      Get.offAllNamed('/SignUp');
+    } else {
       Get.offAllNamed('/home');
-    } on FirebaseAuthException catch (e) {
-      if (Get.isDialogOpen ?? false) Get.back();
-
-      Get.snackbar(
-        "Erro ao cadastrar",
-        e.message ?? "Erro desconhecido",
-        snackPosition: SnackPosition.BOTTOM,
-      );
     }
   }
 
-  Future<void> signOut() async {
+  _setInitialScreenGoogle(GoogleSignInAccount? googleSignInAccount) {
+    print(googleSignInAccount);
+    if (googleSignInAccount == null) {
+      // if the user is not found then the user is navigated to the Register Screen
+      Get.offAllNamed('/SignUp');
+    } else {
+      // if the user exists and logged in the the user is navigated to the Home Screen
+      Get.offAllNamed('/home');
+    }
+  }
+
+  void signInWithGoogle() async {
     try {
-      await _auth.signOut();
+      GoogleSignInAccount? googleSignInAccount = await googleSign.signIn();
+
+      if (googleSignInAccount != null) {
+        GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
+
+        AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
+        await auth
+            .signInWithCredential(credential)
+            .catchError((onErr) => print(onErr));
+      }
     } catch (e) {
       Get.snackbar(
-        "Erro",
-        "Não foi possível sair: $e",
+        "Error",
+        e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+  }
+
+  showLoading() {
+    Get.defaultDialog(
+      title: "Loading",
+      content: CircularProgressIndicator(),
+    );
+  }
+
+  hideLoading() {
+    Get.back();
+  }
+
+  Future register(String email, password) async {
+    try {
+      showLoading();
+
+      await auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      hideLoading();
+    } catch (firebaseAuthException) {
+      hideLoading();
+      Get.snackbar(
+        "Error",
+        firebaseAuthException.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  void updateUsername(String username) {
+    auth.currentUser!.updateDisplayName(username);
+  }
+
+  void setUserPhoto(String photoUrl) {
+    auth.currentUser!.updatePhotoURL(photoUrl);
+  }
+
+  void sendPasswordForgotEmail(String email) async {
+    try {
+      showLoading();
+      await auth.sendPasswordResetEmail(email: email);
+      hideLoading();
+    } catch (firebaseAuthException) {
+      hideLoading();
+      Get.snackbar(
+        "Error",
+        firebaseAuthException.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  Future login(String email, password) async {
+    try {
+      showLoading();
+
+      await auth.signInWithEmailAndPassword(email: email, password: password);
+      await Future.delayed(Duration(seconds: 2));
+      hideLoading();
+    } catch (firebaseAuthException) {
+      hideLoading();
+      Get.snackbar(
+        "Error",
+        firebaseAuthException.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  void signOut() async {
+    showLoading();
+    await auth.signOut();
+    hideLoading();
   }
 }

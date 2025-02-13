@@ -1,4 +1,4 @@
-import 'package:cine_loomi/modules/auth/controller/auth_controller.dart';
+import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
 import 'package:cine_loomi/modules/auth/controller/photo_controller.dart';
 import 'package:cine_loomi/modules/auth/controller/sign_up_controller.dart';
 import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import '../widgets/custom_text_field.dart';
 
 class CompleteSignUpScreen extends StatelessWidget {
-  CompleteSignUpScreen({Key? key}) : super(key: key);
+  CompleteSignUpScreen({super.key});
 
   final String email = Get.arguments['email'];
   final String password = Get.arguments['password'];
@@ -106,14 +106,17 @@ class CompleteSignUpScreen extends StatelessWidget {
               ),
               const SizedBox(height: 56),
               ButtonAccount(
-                  onPressed: () {
+                  onPressed: () async {
                     if (signUpController.validateFieldUser()) {
-                      AuthController.to.signUp(
-                        email,
-                        password,
-                        name: signUpController.userNameController.text,
-                        photo: photoController.selectedImage.value?.path,
+                      await authController.register(email, password);
+                      authController.updateUsername(
+                        signUpController.userNameController.text,
                       );
+                      if (photoController.selectedImage.value != null) {
+                        authController.setUserPhoto(
+                          photoController.selectedImage.value!.path,
+                        );
+                      }
                     }
                   },
                   labelText: 'Continue'),

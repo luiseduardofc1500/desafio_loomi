@@ -1,4 +1,4 @@
-import 'package:cine_loomi/modules/auth/controller/auth_controller.dart';
+import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,21 +11,13 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // O Obx observa as alterações no usuário atual para atualizar o título.
-        title: Obx(() {
-          final user = AuthController.to.firebaseUser.value;
-          if (user != null) {
-            return Text("Bem-vindo ${user.displayName ?? user.email}");
-          } else {
-            return const Text("Bem-vindo");
-          }
-        }),
+        title: const Text('Home'),
         centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
-              AuthController.to.signOut();
+              authController.signOut();
             },
           ),
         ],
@@ -35,38 +27,9 @@ class Home extends StatelessWidget {
         children: <Widget>[
           const SizedBox(height: 20),
           // Exibe a foto do usuário, se existir.
-          Obx(() {
-            final user = AuthController.to.firebaseUser.value;
-            if (user != null &&
-                user.photoURL != null &&
-                user.photoURL!.isNotEmpty) {
-              return CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage(user.photoURL!),
-              );
-            } else {
-              // Caso não exista foto, exibe um avatar padrão.
-              return const CircleAvatar(
-                radius: 50,
-                child: Icon(Icons.person, size: 50),
-              );
-            }
-          }),
+
           const SizedBox(height: 20),
           // Exibe o nome e o email do usuário
-          Obx(() {
-            final user = AuthController.to.firebaseUser.value;
-            return user != null
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Nome: ${user.displayName ?? 'Sem nome'}\nEmail: ${user.email ?? 'Sem email'}",
-                      style: const TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                : Container();
-          }),
           const SizedBox(height: 20),
           const Text(
             "Add Todo Here:",
@@ -75,6 +38,11 @@ class Home extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          TextButton(
+              onPressed: () {
+                Get.toNamed('/SignUp/Complete');
+              },
+              child: Text('Lets')),
           Card(
             margin: const EdgeInsets.all(20),
             child: Padding(
