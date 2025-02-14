@@ -26,17 +26,23 @@ class _MoviePlayerScreenState extends State<MoviePlayerScreen> {
       DeviceOrientation.landscapeRight,
     ]);
 
-    player.open(Media(
-      widget.imageUrl,
-    ));
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+    player.open(Media(widget.imageUrl));
   }
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: SystemUiOverlay.values,
+    );
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
     player.dispose();
     super.dispose();
   }
@@ -49,6 +55,18 @@ class _MoviePlayerScreenState extends State<MoviePlayerScreen> {
       player.play();
       setState(() => isPlaying = true);
     }
+  }
+
+  Future<void> _rewind15Seconds() async {
+    final currentPosition = await player.streams.position.first;
+    final newPosition = currentPosition - const Duration(seconds: 15);
+    player.seek(newPosition < Duration.zero ? Duration.zero : newPosition);
+  }
+
+  Future<void> _forward15Seconds() async {
+    final currentPosition = await player.streams.position.first;
+    final newPosition = currentPosition + const Duration(seconds: 15);
+    player.seek(newPosition);
   }
 
   Widget _buildControlButton({
@@ -117,7 +135,7 @@ class _MoviePlayerScreenState extends State<MoviePlayerScreen> {
                 _buildControlButton(
                   icon: Icons.replay_10,
                   label: "15s",
-                  onPressed: () {},
+                  onPressed: _rewind15Seconds,
                 ),
                 const SizedBox(width: 20),
                 IconButton(
@@ -134,7 +152,7 @@ class _MoviePlayerScreenState extends State<MoviePlayerScreen> {
                 _buildControlButton(
                   icon: Icons.forward_10,
                   label: "15s",
-                  onPressed: () {},
+                  onPressed: _forward15Seconds,
                 ),
               ],
             ),

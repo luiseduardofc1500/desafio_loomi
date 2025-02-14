@@ -1,4 +1,5 @@
 import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
+import 'package:cine_loomi/modules/auth/service/login_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -78,21 +79,24 @@ class AuthController extends GetxController {
     Get.back();
   }
 
-  Future register(String email, password) async {
+  Future<UserCredential?> register(String email, password) async {
     try {
       showLoading();
 
-      await auth.createUserWithEmailAndPassword(
+      UserCredential user = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
+
       hideLoading();
-      Get.offAllNamed('/home');
+      return user;
     } catch (firebaseAuthException) {
       hideLoading();
+
       Get.snackbar(
         "Error",
         firebaseAuthException.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
+      return null;
     }
   }
 
@@ -103,6 +107,7 @@ class AuthController extends GetxController {
   void setUserPhoto(String photoUrl) {
     auth.currentUser!.updatePhotoURL(photoUrl);
     auth.currentUser!.reload();
+    Get.put('/home');
   }
 
   void sendPasswordForgotEmail(String email) async {
@@ -160,7 +165,10 @@ class AuthController extends GetxController {
   void deleteAccount() async {
     try {
       showLoading();
+
+      await LoginService().delete();
       await auth.currentUser!.delete();
+
       hideLoading();
       Get.offAllNamed('/SignUp');
     } catch (firebaseAuthException) {

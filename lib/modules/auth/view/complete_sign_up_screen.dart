@@ -1,9 +1,11 @@
 import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
 import 'package:cine_loomi/modules/auth/controller/photo_controller.dart';
 import 'package:cine_loomi/modules/auth/controller/sign_up_controller.dart';
+import 'package:cine_loomi/modules/auth/service/login_service.dart';
 import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
 import 'package:cine_loomi/modules/auth/widgets/logo_widget.dart';
 import 'package:cine_loomi/themes/app.theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../widgets/custom_text_field.dart';
@@ -108,15 +110,26 @@ class CompleteSignUpScreen extends StatelessWidget {
               ButtonAccount(
                   onPressed: () async {
                     if (signUpController.validateFieldUser()) {
-                      await authController.register(email, password);
+                      UserCredential? user =
+                          await authController.register(email, password);
+                      if (user == null) {
+                        return;
+                      }
                       authController.updateUsername(
                         signUpController.userNameController.text,
                       );
+                      print('user: ${user.user!.uid}');
+                      LoginService().register(
+                          signUpController.userNameController.text,
+                          email,
+                          password,
+                          user.user!.uid);
                       if (photoController.selectedImage.value != null) {
                         authController.setUserPhoto(
                           photoController.selectedImage.value!.path,
                         );
                       }
+                      Get.offAllNamed('/home');
                     }
                   },
                   labelText: 'Continue'),

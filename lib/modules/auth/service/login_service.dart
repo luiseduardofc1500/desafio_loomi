@@ -86,5 +86,44 @@ class LoginService {
     }
   }
 
+  Future<void> delete() async {
+    try {
+      final headers = await _getAuthHeaders();
+      int userId = await getUserId();
+
+      final response = await http.delete(
+        Uri.parse('$_baseUrl/users/$userId'),
+        headers: headers,
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception("API error: ${response.statusCode} ${response.body}");
+      }
+    } catch (error) {
+      print("Error during delete: $error");
+      rethrow;
+    }
+  }
+
+  Future<int> getUserId() async {
+    try {
+      final headers = await _getAuthHeaders();
+
+      final response = await http.get(
+        Uri.parse('$_baseUrl/users/me'),
+        headers: headers,
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception("API error: ${response.statusCode} ${response.body}");
+      }
+
+      return json.decode(response.body)['id'];
+    } catch (error) {
+      print("Error during getUserId: $error");
+      rethrow;
+    }
+  }
+
   getUser() {}
 }

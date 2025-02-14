@@ -29,7 +29,10 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           ButtonTransparent(
             labelText: 'Edit Profile',
-            onPressed: () {
+            onPressed: () async {
+              print(auth.currentUser?.uid);
+              String? token = await auth.currentUser!.getIdToken();
+              print(token);
               Get.toNamed('/home/profile/edit');
             },
           ),
