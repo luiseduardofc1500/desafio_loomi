@@ -1,7 +1,6 @@
 import 'package:cine_loomi/modules/auth/bindings/photo_binding.dart';
 import 'package:cine_loomi/modules/auth/view/complete_sign_up_screen.dart';
 import 'package:cine_loomi/modules/auth/view/forgot_password_screen.dart';
-import 'package:cine_loomi/modules/auth/view/home.dart';
 import 'package:cine_loomi/modules/auth/view/instructions_screen.dart';
 import 'package:cine_loomi/modules/auth/view/photo_selection_screen.dart';
 import 'package:cine_loomi/modules/auth/view/sign_in_screen.dart';
@@ -13,6 +12,7 @@ import 'package:cine_loomi/modules/profile/view/profile_change_password_screen.d
 import 'package:cine_loomi/modules/profile/view/profile_edit_screen.dart';
 import 'package:cine_loomi/modules/profile/view/profile_screen.dart';
 import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
 
 class AppPages {
   static final routes = [
@@ -44,7 +44,7 @@ class AppPages {
           ])
     ]),
     GetPage(name: '/home', page: () => MovieScreen(), children: [
-      GetPage(name: '/movie', page: () => MyScreen()),
+      GetPage(name: '/movie', page: () => MoviePlayerScreen()),
       GetPage(
         name: '/profile',
         page: () => ProfileScreen(),

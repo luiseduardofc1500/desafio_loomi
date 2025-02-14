@@ -16,16 +16,26 @@ class Avatar extends StatelessWidget {
       child: ClipOval(
         child: Image.file(
           File(auth.currentUser?.photoURL ?? ''),
+          height: radius.toDouble() * 2,
+          width: radius.toDouble() * 2,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             return Image.network(
               auth.currentUser?.photoURL ?? '',
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.person,
-                  color: Colors.white,
-                  size: 60,
+                return Container(
+                  width: radius.toDouble() * 2,
+                  height: radius.toDouble() * 2,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.person_2_outlined,
+                    color: Colors.white,
+                    size: 40,
+                  ),
                 );
               },
             );

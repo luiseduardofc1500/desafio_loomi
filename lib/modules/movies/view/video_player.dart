@@ -1,43 +1,145 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
-class MyScreen extends StatefulWidget {
-  const MyScreen({Key? key}) : super(key: key);
+class MoviePlayerScreen extends StatefulWidget {
+  final String imageUrl = Get.arguments;
+  MoviePlayerScreen({Key? key}) : super(key: key);
+
   @override
-  State<MyScreen> createState() => MyScreenState();
+  State<MoviePlayerScreen> createState() => _MoviePlayerScreenState();
 }
 
-class MyScreenState extends State<MyScreen> {
+class _MoviePlayerScreenState extends State<MoviePlayerScreen> {
   late final player = Player();
   late final controller = VideoController(player);
+  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    // Play a [Media] or [Playlist].
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+
     player.open(Media(
-        'https://user-images.githubusercontent.com/28951144/229373695-22f88f13-d18f-4288-9bf1-c3e078d83722.mp4'));
+      widget.imageUrl,
+    ));
   }
 
   @override
   void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     player.dispose();
     super.dispose();
   }
 
+  void _togglePlayPause() {
+    if (player.state.playing) {
+      player.pause();
+      setState(() => isPlaying = false);
+    } else {
+      player.play();
+      setState(() => isPlaying = true);
+    }
+  }
+
+  Widget _buildControlButton({
+    required IconData icon,
+    String? label,
+    required VoidCallback onPressed,
+    double iconSize = 48,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          iconSize: iconSize,
+          icon: Icon(icon, color: Colors.white),
+          onPressed: onPressed,
+        ),
+        if (label != null)
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: double.infinity,
-        height: 300,
-        // Use [Video] widget to display video output.
-        child: Video(
-          controller: controller,
-          width: 100,
-          height: 300,
-        ),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Center(
+            child: Video(
+              controller: controller,
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white),
+                onPressed: () {
+                  Get.offAllNamed('/home');
+                },
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: const Icon(Icons.subtitles, color: Colors.white),
+                onPressed: () {
+                  print("Menu de legendas acionado");
+                },
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildControlButton(
+                  icon: Icons.replay_10,
+                  label: "15s",
+                  onPressed: () {},
+                ),
+                const SizedBox(width: 20),
+                IconButton(
+                  iconSize: 64,
+                  icon: Icon(
+                    isPlaying
+                        ? Icons.pause_circle_filled
+                        : Icons.play_circle_filled,
+                    color: Colors.white,
+                  ),
+                  onPressed: _togglePlayPause,
+                ),
+                const SizedBox(width: 20),
+                _buildControlButton(
+                  icon: Icons.forward_10,
+                  label: "15s",
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

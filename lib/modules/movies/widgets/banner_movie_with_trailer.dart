@@ -1,26 +1,59 @@
+import 'package:cine_loomi/modules/movies/controllers/like_controller.dart';
+import 'package:cine_loomi/modules/movies/models/MovieModels.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 
 class BannerMovieWithTrailer extends StatefulWidget {
-  const BannerMovieWithTrailer({super.key});
+  final MovieModel movie;
+  const BannerMovieWithTrailer({super.key, required this.movie});
 
   @override
-  State<BannerMovieWithTrailer> createState() => _BannerMovieState();
+  State<BannerMovieWithTrailer> createState() => _BannerMovieWithTrailerState();
 }
 
-class _BannerMovieState extends State<BannerMovieWithTrailer> {
+class _BannerMovieWithTrailerState extends State<BannerMovieWithTrailer> {
+  final LikeController controller = Get.put(LikeController());
   late VideoPlayerController _controller;
   late Future<void> _initializeVideoPlayer;
-  final String url =
-      'https://s3-figma-videos-production-sig.figma.com/video/1137114552518648666/TEAM/6ebd/23b4/-cd4c-432a-8374-98cbe9c3af35?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=toFiI~XzpilC8gMip9SXwEJhu96eUc-Am7eK1E~O5FbfyRoWGnqUsxYrfx4vfyrw5n~Y31ea1nMlpB4NjmRkVSHGXmKS9ZeEsinhOL6d-2buggx9mT9EDf~H9bkl1ZhDq8rmtmz7-JylTZJuKPDFcIXqfmVOpnM2qaJM98Fh9UbEerPkfUMHnL1KObl5IAoq35FDWQFuS5dwPGAO1BEgKSRQmZHlGd44Naw2-1O3etRH6XknP6hElh0NBvl6p0Q~xbGXxj4cdhTWbak~o0Pi4N32336q5K7FQ36kY11smxUpYQjUb-jSd6w5Qa-8IhblwDGoMPWEzrWNxJckUxTjag__';
+
+  void _exibirOpcoes() {
+    Get.bottomSheet(
+      Container(
+        height: 150,
+        padding: const EdgeInsets.all(16),
+        color: Colors.white,
+        child: Column(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.thumb_up, color: Colors.red),
+              title: const Text('Like'),
+              onTap: () {
+                controller.setLike();
+                Get.back();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.thumb_down, color: Colors.blue),
+              title: const Text('Dislike'),
+              onTap: () {
+                controller.setDislike();
+                Get.back();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(url));
-    _controller.setLooping(true);
+    _controller = VideoPlayerController.networkUrl(
+      Uri.parse(widget.movie.streamLink),
+    );
     _controller.setVolume(0);
 
     _initializeVideoPlayer = _initializeAndDelay();
@@ -28,13 +61,14 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
 
   Future<void> _initializeAndDelay() async {
     await _controller.initialize();
-    await Future.delayed(const Duration(seconds: 10));
+    await Future.delayed(const Duration(seconds: 5));
     _controller.play();
     setState(() {});
   }
 
   @override
   void dispose() {
+    _controller.pause();
     _controller.dispose();
     super.dispose();
   }
@@ -53,21 +87,31 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
               future: _initializeVideoPlayer,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return VideoPlayer(_controller);
-                } else {
-                  return Image.asset(
-                    'assets/images/movie1.png',
+                  return FittedBox(
                     fit: BoxFit.cover,
+                    child: SizedBox(
+                      // Utilize as dimensões do vídeo para redimensionar
+                      width: _controller.value.size.width,
+                      height: _controller.value.size.height,
+                      child: VideoPlayer(_controller),
+                    ),
                   );
+                } else {
+                  if (widget.movie.poster != null) {
+                    return Image.network(
+                      widget.movie.poster!.url,
+                      fit: BoxFit.cover,
+                    );
+                  }
+                  return Container(color: Colors.black);
                 }
               },
             ),
-            // Overlay com gradiente
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.black.withOpacity(0.9),
+                    Colors.black.withOpacity(0.7),
                     Colors.black.withOpacity(0.5),
                   ],
                   begin: Alignment.bottomCenter,
@@ -75,7 +119,6 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
                 ),
               ),
             ),
-            // Conteúdo sobre o fundo (texto, botões, etc.)
             Positioned(
               bottom: 150,
               left: 30,
@@ -84,8 +127,8 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Musical',
-                    style: TextStyle(
+                    widget.movie.genre,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontFamily: 'Epilogue',
@@ -93,8 +136,8 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
                     ),
                   ),
                   Text(
-                    'Barbie',
-                    style: TextStyle(
+                    widget.movie.name,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 32,
                       fontWeight: FontWeight.w600,
@@ -103,8 +146,8 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore',
-                    style: TextStyle(
+                    widget.movie.synopsis,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
@@ -115,7 +158,7 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Comments 1.322',
                         style: TextStyle(
                           color: Colors.white,
@@ -124,7 +167,7 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
                           fontFamily: 'Epilogue',
                         ),
                       ),
-                      ListTile(
+                      const ListTile(
                         leading: CircleAvatar(
                           radius: 8,
                           backgroundColor: Colors.white,
@@ -143,7 +186,8 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.toNamed('/home/movie');
+                            Get.offAllNamed('/home/movie',
+                                arguments: widget.movie.streamLink);
                           },
                           child: const Text(
                             'Watch',
@@ -161,7 +205,7 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
               ),
             ),
             Positioned(
-              bottom: 40,
+              bottom: 15,
               left: 0,
               right: 0,
               child: Column(
@@ -178,22 +222,15 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
                         children: [
                           Column(
                             children: [
-                              IconButton(
-                                icon: const Icon(Icons.favorite_border),
-                                color: Colors.white,
-                                onPressed: () {
-                                  showBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return Container(
-                                        height: 200,
-                                        color: Colors.white,
-                                      );
-                                    },
-                                  );
-                                },
+                              Obx(
+                                () => IconButton(
+                                  icon: Icon(controller.currentIcon.value,
+                                      size: 20),
+                                  color: Colors.white,
+                                  onPressed: _exibirOpcoes,
+                                ),
                               ),
-                              Text(
+                              const Text(
                                 'Like',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -210,12 +247,10 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
                                 icon: const Icon(Icons.send_outlined),
                                 color: Colors.white,
                                 onPressed: () async {
-                                  await Share.share(
-                                    'https://youtu.be/4w5yruQFEoY?feature=shared',
-                                  );
+                                  await Share.share(widget.movie.streamLink);
                                 },
                               ),
-                              Text(
+                              const Text(
                                 'Gift to Someone',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -228,27 +263,30 @@ class _BannerMovieState extends State<BannerMovieWithTrailer> {
                           ),
                         ],
                       ),
-                      Column(
-                        children: [
-                          Text(
-                            'Avaiable until',
-                            style: TextStyle(
-                              color: Color.fromRGBO(255, 255, 255, 0.45),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Epilogue',
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Available until',
+                              style: TextStyle(
+                                color: Color.fromRGBO(255, 255, 255, 0.45),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Epilogue',
+                              ),
                             ),
-                          ),
-                          Text(
-                            'Fev 29, 2023',
-                            style: TextStyle(
-                              color: Colors.purple,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Epilogue',
+                            Text(
+                              'Mai. 31, 2023',
+                              style: const TextStyle(
+                                color: Colors.purple,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Epilogue',
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),

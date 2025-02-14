@@ -5,6 +5,7 @@ import 'package:cine_loomi/modules/profile/controllers/edit_profile_controller.d
 import 'package:cine_loomi/modules/profile/widgets/avatar.dart';
 import 'package:cine_loomi/modules/profile/widgets/photo_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ProfileEditScreen extends StatelessWidget {
   const ProfileEditScreen({super.key});
@@ -127,6 +128,7 @@ class ProfileEditScreen extends StatelessWidget {
               if (editProfileController.validateFields()) {
                 auth.currentUser?.updateDisplayName(
                     editProfileController.userNameController.text);
+                Get.back();
               }
             },
             labelText: 'Update Profile'),

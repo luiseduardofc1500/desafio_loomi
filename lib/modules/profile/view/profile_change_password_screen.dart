@@ -80,6 +80,7 @@ class ProfileChangePasswordScreen extends StatelessWidget {
               if (changePasswordController.validateFields()) {
                 authController.updatePassword(
                     changePasswordController.newPasswordController.text);
+                Get.back();
               }
             },
             labelText: 'Update Password'),

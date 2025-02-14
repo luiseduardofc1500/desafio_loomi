@@ -6,7 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
-  late Rx<User?> firebaseUser;
+  Rx<User?> firebaseUser = Rx<User?>(auth.currentUser);
 
   late Rx<GoogleSignInAccount?> googleSignInAccount;
 
@@ -17,20 +17,20 @@ class AuthController extends GetxController {
     firebaseUser = Rx<User?>(auth.currentUser);
     googleSignInAccount = Rx<GoogleSignInAccount?>(googleSign.currentUser);
 
-    firebaseUser.bindStream(auth.userChanges());
-    ever(firebaseUser, _setInitialScreen);
+    // firebaseUser.bindStream(auth.userChanges());
+    // ever(firebaseUser, _setInitialScreen);
 
     googleSignInAccount.bindStream(googleSign.onCurrentUserChanged);
     ever(googleSignInAccount, _setInitialScreenGoogle);
   }
 
-  _setInitialScreen(User? user) {
-    if (user == null) {
-      Get.offAllNamed('/SignUp');
-    } else {
-      Get.offAllNamed('/home');
-    }
-  }
+  // _setInitialScreen(User? user) {
+  //   if (user == null) {
+  //     Get.offAllNamed('/SignUp');
+  //   } else {
+  //     Get.offAllNamed('/home');
+  //   }
+  // }
 
   _setInitialScreenGoogle(GoogleSignInAccount? googleSignInAccount) {
     print(googleSignInAccount);
@@ -85,6 +85,7 @@ class AuthController extends GetxController {
       await auth.createUserWithEmailAndPassword(
           email: email, password: password);
       hideLoading();
+      Get.offAllNamed('/home');
     } catch (firebaseAuthException) {
       hideLoading();
       Get.snackbar(
@@ -123,6 +124,7 @@ class AuthController extends GetxController {
       await auth.signInWithEmailAndPassword(email: email, password: password);
       await Future.delayed(Duration(seconds: 2));
       hideLoading();
+      Get.offAllNamed('/home');
     } catch (firebaseAuthException) {
       hideLoading();
       Get.snackbar(
@@ -136,6 +138,7 @@ class AuthController extends GetxController {
   void signOut() async {
     showLoading();
     await auth.signOut();
+    Get.offAllNamed('/SignIn');
     hideLoading();
   }
 
@@ -159,6 +162,7 @@ class AuthController extends GetxController {
       showLoading();
       await auth.currentUser!.delete();
       hideLoading();
+      Get.offAllNamed('/SignUp');
     } catch (firebaseAuthException) {
       hideLoading();
       Get.snackbar(
