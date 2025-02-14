@@ -12,12 +12,11 @@ class PhotoController extends GetxController {
     inProcess.value = true;
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
-      // Atribui o arquivo selecionado diretamente, sem recorte
       selectedImage.value = File(pickedFile.path);
     } else {
       Get.snackbar(
-        'Atenção',
-        'Nenhuma imagem foi selecionada',
+        'Warning',
+        'No photo selected',
         snackPosition: SnackPosition.BOTTOM,
       );
     }

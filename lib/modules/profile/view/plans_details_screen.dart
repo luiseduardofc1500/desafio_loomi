@@ -1,5 +1,4 @@
 import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
-import 'package:cine_loomi/modules/auth/widgets/logo_widget.dart';
 import 'package:cine_loomi/modules/profile/widgets/terminate_plan.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
-import 'package:cine_loomi/modules/auth/controller/photo_controller.dart';
 import 'package:cine_loomi/modules/auth/widgets/button_account.dart';
 import 'package:cine_loomi/modules/auth/widgets/custom_text_field.dart';
 import 'package:cine_loomi/modules/profile/controllers/edit_profile_controller.dart';
 import 'package:cine_loomi/modules/profile/widgets/avatar.dart';
 import 'package:cine_loomi/modules/profile/widgets/photo_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ProfileEditScreen extends StatelessWidget {
   const ProfileEditScreen({super.key});
@@ -17,7 +13,6 @@ class ProfileEditScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final EditProfileController editProfileController = EditProfileController();
-    PhotoController photoController = PhotoController();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -59,7 +54,9 @@ class ProfileEditScreen extends StatelessWidget {
                     Stack(children: [
                       Stack(
                         children: [
-                          Avatar(),
+                          Avatar(
+                            radius: 60,
+                          ),
                           Positioned(
                             right: 0,
                             bottom: 0,

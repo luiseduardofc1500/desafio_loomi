@@ -45,7 +45,9 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 32,
                 children: [
-                  Avatar(),
+                  Avatar(
+                    radius: 60,
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

@@ -8,10 +8,6 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// Recupera o usuário atual do Firebase (via AuthController, se preferir).
-    /// Se você tiver o AuthController com `firebaseUser.value`, pode usar:
-    /// final user = authController.firebaseUser.value;
-    /// Aqui, para simplificar, estou pegando diretamente de 'auth.currentUser'.
     final user = auth.currentUser;
 
     return Scaffold(
@@ -33,7 +29,9 @@ class Home extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Avatar(),
+                  Avatar(
+                    radius: 60,
+                  ),
                   const SizedBox(height: 16),
 
                   // Display Name (se existir)
