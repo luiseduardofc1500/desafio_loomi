@@ -1,15 +1,14 @@
-// photo_selection_screen.dart
 import 'package:cine_loomi/modules/auth/controller/photo_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class PhotoSelectionScreen extends StatelessWidget {
-  const PhotoSelectionScreen({Key? key}) : super(key: key);
+class PhotoSelector extends StatelessWidget {
+  const PhotoSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final PhotoController photoController = Get.put(PhotoController());
+    PhotoController photoController = Get.put(PhotoController());
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('CHOOSE IMAGE')),

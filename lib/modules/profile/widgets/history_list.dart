@@ -18,21 +18,24 @@ class HistoryList extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Row(
-            spacing: 18,
-            children: [
-              BannerWidget(
-                imageUrl:
-                    'https://people.com/thmb/XSbzFMxPwK4TjZwQalrxIkJRVbA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(659x189:661x191)/Barbie-010323-bb98515881e24793ae33c7fd4f777f0b.jpg',
-                texto: 'Barbie',
-                year: '2023',
-              ),
-              BannerWidget(
-                imageUrl: 'https://i.ytimg.com/vi/DXT75VBulRI/sddefault.jpg',
-                texto: 'Everithing...',
-                year: '2022',
-              ),
-            ],
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              spacing: 18,
+              children: [
+                BannerWidget(
+                  imageUrl:
+                      'https://people.com/thmb/XSbzFMxPwK4TjZwQalrxIkJRVbA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(659x189:661x191)/Barbie-010323-bb98515881e24793ae33c7fd4f777f0b.jpg',
+                  texto: 'Barbie',
+                  year: '2023',
+                ),
+                BannerWidget(
+                  imageUrl: 'https://i.ytimg.com/vi/DXT75VBulRI/sddefault.jpg',
+                  texto: 'Everithing...',
+                  year: '2022',
+                ),
+              ],
+            ),
           ),
         ]);
   }

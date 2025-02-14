@@ -1,4 +1,5 @@
 import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
+import 'package:cine_loomi/modules/profile/widgets/avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -32,17 +33,7 @@ class Home extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  // Foto do usuário (se existir)
-                  if (user.photoURL != null)
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundImage: NetworkImage(user.photoURL!),
-                    )
-                  else
-                    const CircleAvatar(
-                      radius: 40,
-                      child: Icon(Icons.person, size: 40),
-                    ),
+                  Avatar(),
                   const SizedBox(height: 16),
 
                   // Display Name (se existir)

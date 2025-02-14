@@ -15,7 +15,7 @@ class ButtonBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       tileColor: Color.fromRGBO(51, 51, 63, 0.9),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),

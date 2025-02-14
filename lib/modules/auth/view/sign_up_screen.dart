@@ -24,7 +24,6 @@ class SignUpScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 16),
               Image.asset(
                 'assets/images/register_logo.png',
                 width: 132,
@@ -60,7 +59,7 @@ class SignUpScreen extends StatelessWidget {
               ),
               const SizedBox(height: 56),
               DividerText(text: 'Or Sign up With'),
-              const SizedBox(height: 56),
+              const SizedBox(height: 32),
               CustomTextField(
                 labelText: 'Email',
                 controller: signUpController.emailController,
@@ -93,7 +92,6 @@ class SignUpScreen extends StatelessWidget {
                   child: const Text('Create Account'),
                 ),
               ),
-              const SizedBox(height: 32),
             ],
           ),
         ),

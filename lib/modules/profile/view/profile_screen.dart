@@ -1,6 +1,9 @@
 import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
+import 'package:cine_loomi/modules/profile/widgets/avatar.dart';
+import 'package:cine_loomi/modules/profile/widgets/banner_delete_account.dart';
 import 'package:cine_loomi/modules/profile/widgets/button_banne_with_date.dart';
 import 'package:cine_loomi/modules/profile/widgets/button_banner.dart';
+import 'package:cine_loomi/modules/profile/widgets/button_sign_out.dart';
 import 'package:cine_loomi/modules/profile/widgets/button_transparent.dart';
 import 'package:cine_loomi/modules/profile/widgets/history_list.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +18,12 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
         leading: IconButton(
           color: theme.colorScheme.secondary,
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
-            Navigator.of(context).pop();
+            Get.back();
           },
         ),
         actions: [
@@ -31,67 +35,74 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(right: 8, left: 8, top: 32),
-        child: Column(
-          spacing: 10,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              spacing: 32,
-              children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: theme.colorScheme.secondary,
-                  child: ClipOval(
-                    child: Image.network(
-                      auth.currentUser?.photoURL ?? '',
-                      width: 120,
-                      height: 120,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Icon(
-                          Icons.person,
-                          size: 60,
-                        );
-                      },
-                    ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8, left: 8, top: 16),
+          child: Column(
+            spacing: 8,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 32,
+                children: [
+                  Avatar(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hello,',
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      Text(
+                        auth.currentUser?.displayName ?? '',
+                        style: theme.textTheme.displayLarge,
+                      ),
+                    ],
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Hello,',
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    Text(
-                      auth.currentUser?.displayName ?? '',
-                      style: theme.textTheme.displayLarge,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 24),
-            ButtonBanner(
-                labelText: 'Change Password',
-                onPressed: () {},
-                linkImage: 'assets/images/Shield.png'),
-            ButtonBanner(
-                labelText: 'Delete my account',
-                onPressed: () {},
-                linkImage: 'assets/images/Trash.png'),
-            SizedBox(height: 24),
-            ButtonBanneWithDate(onPressed: () {}),
-            SizedBox(height: 24),
-            HistoryList(),
-            ButtonTransparent(
-                labelText: 'Log Out',
-                onPressed: () {
-                  authController.signOut();
-                }),
-          ],
+                ],
+              ),
+              SizedBox(height: 14),
+              ButtonBanner(
+                  labelText: 'Change Password',
+                  onPressed: () {
+                    Get.toNamed('/home/profile/change-password');
+                  },
+                  linkImage: 'assets/images/Shield.png'),
+              ButtonBanner(
+                  labelText: 'Delete my account',
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(16),
+                        ),
+                      ),
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.4,
+                      ),
+                      builder: (BuildContext context) {
+                        return BannerDeleteAccount();
+                      },
+                    );
+                  },
+                  linkImage: 'assets/images/Trash.png'),
+              SizedBox(height: 14),
+              ButtonBanneWithDate(onPressed: () {
+                Get.toNamed('/home/profile/plans-details');
+              }),
+              SizedBox(height: 14),
+              HistoryList(),
+              Padding(
+                padding: const EdgeInsets.only(top: 16, bottom: 32),
+                child: ButtonSignOut(
+                    labelText: 'Log Out',
+                    onPressed: () {
+                      authController.signOut();
+                    }),
+              ),
+            ],
+          ),
         ),
       ),
     );

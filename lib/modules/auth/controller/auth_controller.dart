@@ -26,7 +26,6 @@ class AuthController extends GetxController {
 
   _setInitialScreen(User? user) {
     if (user == null) {
-      // if the user is not found then the user is navigated to the Register Screen
       Get.offAllNamed('/SignUp');
     } else {
       Get.offAllNamed('/home');
@@ -102,6 +101,7 @@ class AuthController extends GetxController {
 
   void setUserPhoto(String photoUrl) {
     auth.currentUser!.updatePhotoURL(photoUrl);
+    auth.currentUser!.reload();
   }
 
   void sendPasswordForgotEmail(String email) async {
@@ -137,5 +137,35 @@ class AuthController extends GetxController {
     showLoading();
     await auth.signOut();
     hideLoading();
+  }
+
+  void updatePassword(String password) async {
+    try {
+      showLoading();
+      await auth.currentUser!.updatePassword(password);
+      hideLoading();
+    } catch (firebaseAuthException) {
+      hideLoading();
+      Get.snackbar(
+        "Error",
+        firebaseAuthException.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  void deleteAccount() async {
+    try {
+      showLoading();
+      await auth.currentUser!.delete();
+      hideLoading();
+    } catch (firebaseAuthException) {
+      hideLoading();
+      Get.snackbar(
+        "Error",
+        firebaseAuthException.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 }
