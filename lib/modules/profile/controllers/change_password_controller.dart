@@ -18,6 +18,7 @@ class ChangePasswordController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
+
     if (newPassword != confirmPassword) {
       Get.snackbar('Error', 'The passwords do not match',
           snackPosition: SnackPosition.BOTTOM);

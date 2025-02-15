@@ -128,7 +128,7 @@ class ProfileEditScreen extends StatelessWidget {
               if (editProfileController.validateFields()) {
                 auth.currentUser?.updateDisplayName(
                     editProfileController.userNameController.text);
-                Get.back();
+                Get.offAllNamed('/home');
               }
             },
             labelText: 'Update Profile'),

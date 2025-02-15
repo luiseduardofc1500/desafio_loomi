@@ -1,8 +1,9 @@
+import 'dart:async';
+import 'package:cine_loomi/modules/movies/widgets/comments_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
+import 'package:video_player/video_player.dart';
 
 class MoviePlayerScreen extends StatefulWidget {
   final String imageUrl = Get.arguments;
@@ -13,9 +14,10 @@ class MoviePlayerScreen extends StatefulWidget {
 }
 
 class _MoviePlayerScreenState extends State<MoviePlayerScreen> {
-  late final player = Player();
-  late final controller = VideoController(player);
-  bool isPlaying = false;
+  late VideoPlayerController _controller;
+  bool _controlsVisible = false;
+  bool _subtitlesVisible = false;
+  Timer? _hideTimer;
 
   @override
   void initState() {
@@ -25,10 +27,16 @@ class _MoviePlayerScreenState extends State<MoviePlayerScreen> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-    player.open(Media(widget.imageUrl));
+    _controller = VideoPlayerController.network(widget.imageUrl)
+      ..initialize().then((_) {
+        setState(() {});
+      });
+
+    _controller.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -37,41 +45,83 @@ class _MoviePlayerScreenState extends State<MoviePlayerScreen> {
       SystemUiMode.manual,
       overlays: SystemUiOverlay.values,
     );
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
 
-    player.dispose();
+    _hideTimer?.cancel();
+    _controller.dispose();
     super.dispose();
   }
 
+  void _showControls() {
+    setState(() {
+      _controlsVisible = true;
+    });
+    _resetHideTimer();
+  }
+
+  void _resetHideTimer() {
+    _hideTimer?.cancel();
+    _hideTimer = Timer(const Duration(seconds: 3), () {
+      setState(() {
+        _controlsVisible = false;
+      });
+    });
+  }
+
   void _togglePlayPause() {
-    if (player.state.playing) {
-      player.pause();
-      setState(() => isPlaying = false);
-    } else {
-      player.play();
-      setState(() => isPlaying = true);
-    }
+    setState(() {
+      if (_controller.value.isPlaying) {
+        _controller.pause();
+      } else {
+        _controller.play();
+      }
+    });
+    _resetHideTimer();
   }
 
   Future<void> _rewind15Seconds() async {
-    final currentPosition = await player.streams.position.first;
+    final currentPosition = _controller.value.position;
     final newPosition = currentPosition - const Duration(seconds: 15);
-    player.seek(newPosition < Duration.zero ? Duration.zero : newPosition);
+    _controller
+        .seekTo(newPosition < Duration.zero ? Duration.zero : newPosition);
+    _resetHideTimer();
   }
 
   Future<void> _forward15Seconds() async {
-    final currentPosition = await player.streams.position.first;
+    final currentPosition = _controller.value.position;
     final newPosition = currentPosition + const Duration(seconds: 15);
-    player.seek(newPosition);
+    _controller.seekTo(newPosition);
+    _resetHideTimer();
+  }
+
+  void _showComments() {
+    _resetHideTimer();
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Comentários",
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return CommentsList();
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1, 0),
+            end: Offset.zero,
+          ).animate(anim1),
+          child: child,
+        );
+      },
+    );
   }
 
   Widget _buildControlButton({
     required IconData icon,
-    String? label,
     required VoidCallback onPressed,
     double iconSize = 48,
   }) {
@@ -83,11 +133,93 @@ class _MoviePlayerScreenState extends State<MoviePlayerScreen> {
           icon: Icon(icon, color: Colors.white),
           onPressed: onPressed,
         ),
-        if (label != null)
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
+      ],
+    );
+  }
+
+  Widget _buildControlsOverlay() {
+    final duration = _controller.value.duration;
+    final position = _controller.value.position;
+    final progress = duration.inMilliseconds > 0
+        ? position.inMilliseconds / duration.inMilliseconds
+        : 0.0;
+
+    return Stack(
+      children: [
+        Positioned(
+          top: 20,
+          right: 20,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.subtitles,
+                    color: _subtitlesVisible ? Colors.yellow : Colors.white),
+                onPressed: () {
+                  setState(() {
+                    _subtitlesVisible = !_subtitlesVisible;
+                  });
+                  _resetHideTimer();
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.comment, color: Colors.white),
+                onPressed: _showComments,
+              ),
+            ],
           ),
+        ),
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                iconSize: 24,
+                icon: ImageIcon(
+                  AssetImage('assets/images/back_icon.png'),
+                  color: Colors.white,
+                ),
+                onPressed: _rewind15Seconds,
+              ),
+              const SizedBox(width: 20),
+              IconButton(
+                iconSize: 50,
+                icon: Icon(
+                  _controller.value.isPlaying
+                      ? Icons.pause_circle_filled
+                      : Icons.play_circle_filled,
+                  color: Colors.white,
+                ),
+                onPressed: _togglePlayPause,
+              ),
+              const SizedBox(width: 20),
+              IconButton(
+                iconSize: 24,
+                icon: ImageIcon(
+                  AssetImage('assets/images/icon_foward.png'),
+                  color: Colors.white,
+                ),
+                onPressed: _forward15Seconds,
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 10,
+          left: 30,
+          right: 30,
+          child: Slider(
+            activeColor: Colors.purple,
+            inactiveColor: Colors.white54,
+            value: progress.clamp(0.0, 1.0),
+            onChanged: (newValue) {
+              final newPosition = Duration(
+                  milliseconds: (duration.inMilliseconds * newValue).round());
+              _controller.seekTo(newPosition);
+              _resetHideTimer();
+            },
+          ),
+        ),
       ],
     );
   }
@@ -96,69 +228,48 @@ class _MoviePlayerScreenState extends State<MoviePlayerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          Center(
-            child: Video(
-              controller: controller,
-              width: double.infinity,
-              height: double.infinity,
-            ),
-          ),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white),
-                onPressed: () {
-                  Get.offAllNamed('/home');
-                },
-              ),
-            ),
-          ),
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: const Icon(Icons.subtitles, color: Colors.white),
-                onPressed: () {
-                  print("Menu de legendas acionado");
-                },
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildControlButton(
-                  icon: Icons.replay_10,
-                  label: "15s",
-                  onPressed: _rewind15Seconds,
-                ),
-                const SizedBox(width: 20),
-                IconButton(
-                  iconSize: 64,
-                  icon: Icon(
-                    isPlaying
-                        ? Icons.pause_circle_filled
-                        : Icons.play_circle_filled,
-                    color: Colors.white,
+      body: _controller.value.isInitialized
+          ? GestureDetector(
+              onTap: _showControls,
+              child: Stack(
+                children: [
+                  Center(
+                    child: AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    ),
                   ),
-                  onPressed: _togglePlayPause,
-                ),
-                const SizedBox(width: 20),
-                _buildControlButton(
-                  icon: Icons.forward_10,
-                  label: "15s",
-                  onPressed: _forward15Seconds,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+                  if (_subtitlesVisible)
+                    Positioned(
+                      bottom: 50,
+                      left: 20,
+                      right: 20,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        color: Colors.black54,
+                        child: const Text(
+                          'Legenda: Texto de exemplo da legenda.',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  if (_controlsVisible) _buildControlsOverlay(),
+                  Positioned(
+                    top: 20,
+                    left: 20,
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      onPressed: () {
+                        Get.offAllNamed('/home');
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
