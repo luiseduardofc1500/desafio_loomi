@@ -5,7 +5,7 @@ import 'package:cine_loomi/modules/auth/view/instructions_screen.dart';
 import 'package:cine_loomi/modules/auth/view/photo_selection_screen.dart';
 import 'package:cine_loomi/modules/auth/view/sign_in_screen.dart';
 import 'package:cine_loomi/modules/auth/view/sign_up_screen.dart';
-import 'package:cine_loomi/modules/movies/view/movie_screen.dart';
+import 'package:cine_loomi/modules/movies/view/home.dart';
 import 'package:cine_loomi/modules/movies/view/movie_player_screen.dart';
 import 'package:cine_loomi/modules/profile/view/plans_details_screen.dart';
 import 'package:cine_loomi/modules/profile/view/profile_change_password_screen.dart';
@@ -42,7 +42,7 @@ class AppPages {
             ),
           ])
     ]),
-    GetPage(name: '/home', page: () => MovieScreen(), children: [
+    GetPage(name: '/home', page: () => Home(), children: [
       GetPage(name: '/movie', page: () => MoviePlayerScreen()),
       GetPage(
         name: '/profile',
