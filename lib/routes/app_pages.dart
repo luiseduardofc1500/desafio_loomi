@@ -5,7 +5,12 @@ import 'package:cine_loomi/modules/auth/view/instructions_screen.dart';
 import 'package:cine_loomi/modules/auth/view/photo_selection_screen.dart';
 import 'package:cine_loomi/modules/auth/view/sign_in_screen.dart';
 import 'package:cine_loomi/modules/auth/view/sign_up_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:cine_loomi/modules/movies/view/movie_screen.dart';
+import 'package:cine_loomi/modules/movies/view/movie_player_screen.dart';
+import 'package:cine_loomi/modules/profile/view/plans_details_screen.dart';
+import 'package:cine_loomi/modules/profile/view/profile_change_password_screen.dart';
+import 'package:cine_loomi/modules/profile/view/profile_edit_screen.dart';
+import 'package:cine_loomi/modules/profile/view/profile_screen.dart';
 import 'package:get/get.dart';
 
 class AppPages {
@@ -37,7 +42,19 @@ class AppPages {
             ),
           ])
     ]),
-    GetPage(name: '/home', page: () => Container()),
-    // Outras rotas podem ser adicionadas aqui
+    GetPage(name: '/home', page: () => MovieScreen(), children: [
+      GetPage(name: '/movie', page: () => MoviePlayerScreen()),
+      GetPage(
+        name: '/profile',
+        page: () => ProfileScreen(),
+        children: [
+          GetPage(name: '/edit', page: () => ProfileEditScreen()),
+          GetPage(
+              name: '/change-password',
+              page: () => ProfileChangePasswordScreen()),
+          GetPage(name: '/plans-details', page: () => PlansDetailsScreen()),
+        ],
+      ),
+    ]),
   ];
 }

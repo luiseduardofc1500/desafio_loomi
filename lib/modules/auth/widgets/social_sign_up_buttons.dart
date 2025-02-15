@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class SocialSignUpButtons extends StatelessWidget {
-  const SocialSignUpButtons({Key? key}) : super(key: key);
+  final VoidCallback onGoogleTap;
+  final VoidCallback onAppleTap;
+  const SocialSignUpButtons(
+      {Key? key, required this.onGoogleTap, required this.onAppleTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +14,7 @@ class SocialSignUpButtons extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            // lógica de login com Google
+            onGoogleTap();
           },
           child: Container(
             width: 70,
@@ -31,7 +35,7 @@ class SocialSignUpButtons extends StatelessWidget {
         ),
         const SizedBox(width: 24),
         InkWell(
-          onTap: () {},
+          onTap: onAppleTap,
           child: Container(
             width: 70,
             height: 70,

@@ -1,6 +1,6 @@
+import 'package:cine_loomi/modules/auth/constants/firebase_auth_constants.dart';
 import 'package:cine_loomi/modules/auth/controller/sign_up_controller.dart';
 import 'package:cine_loomi/modules/auth/widgets/divider_text.dart';
-import 'package:cine_loomi/modules/auth/widgets/logo_widget.dart';
 import 'package:cine_loomi/modules/auth/widgets/text_with_text_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,8 +24,11 @@ class SignUpScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 16),
-              LogoWidget(),
+              Image.asset(
+                'assets/images/register_logo.png',
+                width: 132,
+                height: 98,
+              ),
               const SizedBox(height: 8),
               TextWithTextButton(
                   onPressed: () {
@@ -48,8 +51,13 @@ class SignUpScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 42),
-              const SocialSignUpButtons(),
-              const SizedBox(height: 32),
+              SocialSignUpButtons(
+                onGoogleTap: () {
+                  authController.signInWithGoogle();
+                },
+                onAppleTap: () {},
+              ),
+              const SizedBox(height: 56),
               DividerText(text: 'Or Sign up With'),
               const SizedBox(height: 32),
               CustomTextField(
@@ -73,13 +81,17 @@ class SignUpScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     if (signUpController.validateFields()) {
-                      Get.toNamed('/SignUp/Complete');
+                      Future.delayed(const Duration(seconds: 2), () {
+                        Get.toNamed('SignUp/Complete', arguments: {
+                          'email': signUpController.emailController.text,
+                          'password': signUpController.passwordController.text,
+                        });
+                      });
                     }
                   },
                   child: const Text('Create Account'),
                 ),
               ),
-              const SizedBox(height: 32),
             ],
           ),
         ),

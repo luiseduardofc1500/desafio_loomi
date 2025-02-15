@@ -1,4 +1,3 @@
-// password_text_field.dart
 import 'package:cine_loomi/modules/auth/controller/password_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,8 +29,8 @@ class PasswordTextField extends StatelessWidget {
             suffixIcon: IconButton(
               icon: Icon(
                 passwordController.obscureText.value
-                    ? Icons.visibility_off
-                    : Icons.visibility,
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
               ),
               onPressed: passwordController.toggleVisibility,
             ),

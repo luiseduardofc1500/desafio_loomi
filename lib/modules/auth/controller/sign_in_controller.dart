@@ -10,23 +10,16 @@ class SignInController extends GetxController {
     final password = passwordController.text;
 
     if (!GetUtils.isEmail(email)) {
-      Get.snackbar('Erro', 'Email inválido',
+      Get.snackbar('Error', 'Invalid email',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
     if (password.isEmpty) {
-      Get.snackbar('Erro', 'Preencha o campo de senha',
+      Get.snackbar('Error', 'Please fill in the password field',
           snackPosition: SnackPosition.BOTTOM);
       return false;
     }
-    //Fazer aqui a logica do firebase de login
-    return true;
-  }
 
-  @override
-  void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.onClose();
+    return true;
   }
 }
