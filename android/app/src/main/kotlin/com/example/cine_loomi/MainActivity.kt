@@ -1,4 +1,4 @@
-package com.example.cine_loomi
+package com.app.untold
 
 import io.flutter.embedding.android.FlutterActivity
 
