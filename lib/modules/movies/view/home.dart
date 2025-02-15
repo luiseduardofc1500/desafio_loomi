@@ -9,14 +9,14 @@ import 'package:cine_loomi/modules/profile/widgets/avatar.dart';
 import 'package:cine_loomi/modules/movies/widgets/banner_movie_with_trailer.dart';
 import 'package:cine_loomi/modules/movies/widgets/movie_background.dart';
 
-class MovieScreen extends StatefulWidget {
-  const MovieScreen({Key? key}) : super(key: key);
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
 
   @override
-  State<MovieScreen> createState() => _MovieScreenState();
+  State<Home> createState() => _HomeState();
 }
 
-class _MovieScreenState extends State<MovieScreen> {
+class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
