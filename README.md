@@ -12,7 +12,6 @@ Este projeto é uma aplicação Flutter desenvolvida com base no desafio propost
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Instalação e Configuração](#instalação-e-configuração)
 - [Execução do Projeto](#execução-do-projeto)
-- [Organização do Projeto](#organização-do-projeto)
 - [Extras e Considerações](#extras-e-considerações)
 
 ## Recursos
