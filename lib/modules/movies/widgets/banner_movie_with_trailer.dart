@@ -90,7 +90,6 @@ class _BannerMovieWithTrailerState extends State<BannerMovieWithTrailer> {
                   return FittedBox(
                     fit: BoxFit.cover,
                     child: SizedBox(
-                      // Utilize as dimensões do vídeo para redimensionar
                       width: _controller.value.size.width,
                       height: _controller.value.size.height,
                       child: VideoPlayer(_controller),
@@ -186,8 +185,10 @@ class _BannerMovieWithTrailerState extends State<BannerMovieWithTrailer> {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.offAllNamed('/home/movie',
-                                arguments: widget.movie.streamLink);
+                            Get.offAllNamed(
+                              '/home/movie',
+                              arguments: widget.movie.streamLink,
+                            );
                           },
                           child: const Text(
                             'Watch',
